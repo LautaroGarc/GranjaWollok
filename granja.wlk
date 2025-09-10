@@ -1,6 +1,10 @@
 class Animal {
-    var property peso
+    var property peso = 0
     var property vacunado = false
+    var property enfermo = false
+    var property muerto = false
+    var nivelHambre = 0
+    var nivelSed = 0
     var cantComida = 0
 
     method nacer() {peso = 1}
@@ -24,6 +28,7 @@ class Animal {
 }
 
 class Vaca inherits Animal {
+    const property especie = 'vaca'
     var property hambre = peso < 400
     var property sed = false
 
@@ -51,6 +56,7 @@ class Vaca inherits Animal {
 }
 
 class Cerdo inherits Animal {
+    const property especie = 'cerdo'
     var property hambre = peso < 200
     var property sed = cantComida >= 3
 
@@ -74,6 +80,7 @@ class Cerdo inherits Animal {
 }
 
 class Gallina inherits Animal {
+    const property especie = 'gallina'
     var property hambre = true
     var property sed = false
 
@@ -83,5 +90,89 @@ class Gallina inherits Animal {
 }
 
 class Rancho {
+    const rancho = []
+    var tiempo = 0
 
+    method crearVaca() {
+        const vaca = new Vaca()
+        vaca.nacer()
+        rancho.add(vaca)
+    }
+
+    method crearCerdo() {
+        const cerdo = new Cerdo()
+        cerdo.nacer()
+        rancho.add(cerdo)
+    }
+
+    method crearGallina() {
+        const gallina = new Gallina()
+        gallina.nacer()
+        rancho.add(new Gallina())
+    }
+
+    method animalAleatorio() {
+        return rancho.get(0.randomUpTo(rancho.size() -1).floor())
+    }
+
+    method cruzarAnimales(Animal1, Animal2) {
+
+    }
+
+    method tienenHambre() {
+        rancho.forEach({ animal => animal.hambre() })
+    }
+
+    method tienenSed() {
+        rancho.forEach({ animal => animal.sed() })
+    }
+
+    method estaEnfermo() {
+        rancho.forEach({ animal => animal.enfermo() })
+    }
+
+    method alimentarAnimales(cantidadAlimento) {
+        rancho.forEach({ animal => animal.comer(cantidadAlimento) })
+    }
+
+    method beberAnimales() {
+        rancho.forEach({ animal => animal.beber() })
+    }
+
+    method vacunarAnimales() {
+        rancho.forEach({ animal => animal.vacunar() })
+    }
+
+    method caminarAnimales() {
+        rancho.forEach({ animal => animal.caminar() })
+    }
+
+    method enfermarAnimales() {
+        rancho.forEach({ animal => animal.enfermo(true) })
+    }
+
+    method enfermar(indiceAnimal){
+        rancho[indiceAnimal].enfermo(true)
+    }
+
+    method avanzarTiempo() {
+        rancho.forEach({animal =>
+            if (animal.estaEnfermo()) {
+                if (0.randomUpTo(4).floor() == 1) {
+                    console.println('un/a '+ animal.especie() +' murió')
+                    animal.muerto(true)
+                }
+            }
+
+            animal.nivelHambre(animal.nivelHambre() + 1)
+            animal.nivelSed(animal.nivelSed() + 1)
+
+            if (animal.nivelHambre() > 5 || animal.nivelSed() > 5) {
+                console.println('un/a '+ animal.especie() +' murió')
+                animal.muerto(true)
+            }
+        })
+
+        rancho.filter({animal => !animal.muerto()})
+    }
 }
